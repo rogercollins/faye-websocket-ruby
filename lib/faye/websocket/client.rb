@@ -7,7 +7,7 @@ module Faye
       DEFAULT_PORTS    = {'http' => 80, 'https' => 443, 'ws' => 80, 'wss' => 443}
       SECURE_PROTOCOLS = ['https', 'wss']
 
-      attr_reader :headers, :status
+      attr_reader :headers, :status, :connection
 
       def initialize(url, protocols = nil, options = {})
         @url    = url
@@ -51,6 +51,7 @@ module Faye
 
         EventMachine.connect(endpoint.host, port, Connection) do |conn|
           conn.parent = self
+          @connection = conn
         end
       rescue => error
         emit_error("Network error: #{url}: #{error.message}")
